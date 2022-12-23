@@ -12,7 +12,7 @@ export class AbsencesService {
   currentAbsenceDate!: string;
   currentAbsenceID!: number;
 
-  BASE_URL: string = 'https://calendar-back-production-dfa3.up.railway.app/';
+  BASE_URL: string = 'https://calendar-back-production-dfa3.up.railway.app';
   API: string = 'api/absences';
 
   getAllAbsences() {
