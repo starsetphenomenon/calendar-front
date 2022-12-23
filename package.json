@@ -2,11 +2,11 @@
   "name": "calendar",
   "version": "0.0.0",
   "scripts": {
-    "ng": "nx",
-    "start": "nx serve",
-    "build": "nx build",
-    "watch": "nx build --watch --configuration development",
-    "test": "nx test",
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
     "postinstall": "node ./decorate-angular-cli.js"
   },
   "private": true,
