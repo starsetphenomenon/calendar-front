@@ -1,0 +1,107 @@
+<div *ngIf="showDialog" class="dialog-wrapper">
+  <form [formGroup]="absenceForm" (ngSubmit)="onRequest(absenceForm.value)">
+    <div class="dialog">
+      <div class="header">
+        <h2 class="bold-m0">{{ title }}</h2>
+        <div (click)="handleDialogView(false)" class="close">
+          <mat-icon>close</mat-icon>
+        </div>
+      </div>
+      <div class="content">
+        <div class="content-item">
+          <h3 class="bold-mb10">What type of absence?</h3>
+          <mat-select formControlName="absenceType" class="bordered">
+            <mat-option
+              *ngFor="let item of absenceTypes | slice : 1"
+              [value]="item.value"
+            >
+              {{ item.viewValue }}
+            </mat-option>
+          </mat-select>
+        </div>
+        <div class="content-item">
+          <h3 class="bold-mb10">From - To</h3>
+          <div class="dates">
+            <mat-form-field class="dates-item" appearance="outline">
+              <input
+                class="dates-val"
+                placeholder="DD/MM/YYYY"
+                [max]="maxDate"
+                formControlName="fromDate"
+                matInput
+                [matDatepicker]="fromDate"
+              />
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="fromDate"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #fromDate></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field class="dates-item" appearance="outline">
+              <input
+                placeholder="DD/MM/YYYY"
+                [min]="minDate"
+                formControlName="toDate"
+                matInput
+                [matDatepicker]="toDate"
+              />
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="toDate"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #toDate></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="content-item wide">
+          <h3 class="bold-mb10" *ngIf="!currentAbsence.comment">Comment</h3>
+          <h3 class="bold-mb10" *ngIf="currentAbsence.comment">Note</h3>
+          <span *ngIf="currentAbsence.comment">{{
+            currentAbsence.comment
+          }}</span>
+          <textarea
+            formControlName="comment"
+            *ngIf="!currentAbsence.comment"
+            name="comment"
+            #comment
+            class="bordered full-w"
+            matInput
+            placeholder="Add a comment..."
+          ></textarea>
+        </div>
+      </div>
+      <div *ngIf="name === 'updateDialog'" class="footer">
+        <div *ngIf="isTaken" class="msg">Day(s) are already taken!</div>
+        <div *ngIf="outOfDays" class="msg">You got less days available!</div>
+        <button
+          type="button"
+          (click)="deleteAbsence()"
+          color="warn"
+          mat-flat-button
+        >
+          Delete Absence
+        </button>
+        <button
+          type="button"
+          [disabled]="!absenceForm.dirty"
+          (click)="onUpdateAbsence()"
+          mat-flat-button
+          color="primary"
+        >
+          Update
+        </button>
+      </div>
+      <div *ngIf="name === 'requestDialog'" class="footer">
+        <div *ngIf="isTaken" class="msg">Day(s) are already taken!</div>
+        <div *ngIf="outOfDays" class="msg">You got less days available!</div>
+        <button type="button" (click)="handleDialogView(false)" mat-flat-button>
+          Cancel
+        </button>
+        <button [disabled]="!absenceForm.valid" mat-flat-button color="primary">
+          Request
+        </button>
+      </div>
+    </div>
+    <div (click)="handleDialogView(false)" class="wrapper"></div>
+  </form>
+</div>
