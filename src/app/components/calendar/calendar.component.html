@@ -1,0 +1,223 @@
+<div class="content-wrapper">
+  <div class="calendar">
+    <div class="calendar__header">
+      <h1 class="bold">Calendar</h1>
+      <div class="switch">
+        <mat-button-toggle-group [(ngModel)]="calendarType">
+          <mat-button-toggle
+            class="bold"
+            (click)="setCalendarType(calendarType)"
+            value="month"
+            >Month
+          </mat-button-toggle>
+          <mat-button-toggle
+            class="bold"
+            (click)="setCalendarType(calendarType)"
+            value="year"
+            >Year</mat-button-toggle
+          >
+        </mat-button-toggle-group>
+      </div>
+    </div>
+    <div class="calendar__filters">
+      <div class="current" [ngSwitch]="calendarType">
+        <div *ngSwitchCase="'month'" class="current">
+          <mat-icon class="arrow" (click)="setCurrentDate(-1, 'month')"
+            >keyboard_arrow_left</mat-icon
+          >
+          <h3 class="current__val">
+            {{ date.format('MMMM ') }}{{ date.format('YYYY ') }}
+          </h3>
+          <mat-icon class="arrow" (click)="setCurrentDate(1, 'month')"
+            >keyboard_arrow_right</mat-icon
+          >
+        </div>
+        <div *ngSwitchCase="'year'" class="current">
+          <mat-icon class="arrow" (click)="setCurrentDate(-1, 'year')"
+            >keyboard_arrow_left</mat-icon
+          >
+          <h3 class="current__val">{{ date.format('YYYY ') }}</h3>
+          <mat-icon class="arrow" (click)="setCurrentDate(1, 'year')"
+            >keyboard_arrow_right</mat-icon
+          >
+        </div>
+        <button
+          (click)="setTodaysDate()"
+          class="request-button"
+          mat-flat-button
+        >
+          Today
+        </button>
+      </div>
+      <mat-form-field class="filter" appearance="outline">
+        <mat-label class="filter-select bolder"
+          >Filter by absence type</mat-label
+        >
+        <mat-select
+          (selectionChange)="filterByAbsence()"
+          [(value)]="selectedAbsenceFilter"
+        >
+          <mat-option *ngFor="let item of absenceTypes" [value]="item.value">
+            {{ item.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div [ngSwitch]="calendarType">
+      <div *ngSwitchCase="'month'">
+        <div *ngIf="status === 'pending'" class="spinner">
+          <mat-spinner></mat-spinner>
+        </div>
+        <div class="titles">
+          <div *ngFor="let day of weekDays" class="titles__item">{{ day }}</div>
+        </div>
+        <div *ngFor="let calendarItem of calendar; let i = index">
+          <div class="calendar__content">
+            <div
+              [class.weekend]="day.isWeekend"
+              [ngClass]="day.className"
+              *ngFor="let day of calendarItem"
+            >
+              <div
+                (click)="
+                  day.absence.absenceType.length
+                    ? updateAbsence(day.fullDate, day.absence.id)
+                    : handleDialogView(true, 'requestDialog', day.fullDate)
+                "
+                class="day green"
+                [class.light]="day.className !== 'in-month'"
+              >
+                <div class="day-val">{{ day.day }}</div>
+                <span
+                  [class.vacation]="
+                    day.absence.absenceType === AbsenceTypeEnums.VACATION
+                  "
+                  [class.sick]="
+                    day.absence.absenceType === AbsenceTypeEnums.SICK
+                  "
+                  class="day-comment"
+                  >{{ day.absence.comment }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngSwitchCase="'year'" class="calendar__content-years">
+        <div *ngIf="status === 'pending'" class="spinner">
+          <mat-spinner></mat-spinner>
+        </div>
+        <div *ngFor="let month of months; let i = index">
+          <div
+            [attr.name]="month"
+            (click)="setCurrentMonth($event)"
+            class="month"
+          >
+            {{ month }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="absence">
+    <div class="request">
+      <button
+        (click)="handleDialogView(true, 'requestDialog', '')"
+        class="request-button"
+        mat-flat-button
+        color="primary"
+      >
+        Request absence
+      </button>
+    </div>
+    <div class="absence__types">
+      <h2 class="bold">Absence types</h2>
+      <div class="absence-type">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <div class="type-icon green"></div>
+              <h2 class="m-0">Vacation</h2>
+            </mat-panel-title>
+            <mat-panel-description class="bold">
+              <span class="left"
+                >{{
+                  availableDays.vacation.entitlement -
+                    availableDays.vacation.taken
+                }}
+                Days left</span
+              >
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <h3 class="bold">Breakdown for 2022</h3>
+          <div class="vacation-desc">
+            <div class="vacation-item">
+              <span class="fw-500"> Entitlement </span>
+              <span class="fw-500">
+                {{ availableDays.vacation.entitlement }} days
+              </span>
+            </div>
+            <div class="vacation-item">
+              <span class="fw-500"> Taken </span>
+              <span class="fw-500">
+                {{ availableDays.vacation.taken }} days
+              </span>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </div>
+      <div class="absence-type">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <div class="type-icon red"></div>
+              <h2 class="m-0">Sick</h2>
+            </mat-panel-title>
+            <mat-panel-description class="bold">
+              <span class="left"
+                >{{
+                  availableDays.sick.entitlement - availableDays.sick.taken
+                }}
+                Days left</span
+              >
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <h3 class="bold">Breakdown for 2022</h3>
+          <div class="vacation-desc">
+            <div class="vacation-item">
+              <span class="fw-500"> Entitlement </span>
+              <span class="fw-500">
+                {{ availableDays.sick.entitlement }} days
+              </span>
+            </div>
+            <div class="vacation-item">
+              <span class="fw-500"> Taken </span>
+              <span class="fw-500"> {{ availableDays.sick.taken }} days </span>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-dialog
+  [title]="'Request Absence'"
+  [currentAbsence]="currentAbsence"
+  name="requestDialog"
+  [absenceTypes]="absenceTypes"
+  (closeDialog)="closeDialog($event)"
+  [dialogs]="dialogs"
+  [showDialog]="dialogs.requestDialog"
+>
+</app-dialog>
+<app-dialog
+  [title]="'Absence Period'"
+  [currentAbsence]="currentAbsence"
+  name="updateDialog"
+  [absenceTypes]="absenceTypes"
+  (closeDialog)="closeDialog($event)"
+  [dialogs]="dialogs"
+  [showDialog]="dialogs.updateDialog"
+>
+</app-dialog>
