@@ -14,7 +14,7 @@ export class AuthService {
         private store: Store<{ appState: AppState }>
     ) { }
 
-    BASE_URL: string = 'http://localhost:3333';
+    BASE_URL: string = 'https://calendar-back-production-dfa3.up.railway.app';
     API: string = 'api/users';
     user!: User;
 
