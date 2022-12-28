@@ -5,7 +5,6 @@ import { AbsencesService } from '../../services/absences.service';
 import { Store } from '@ngrx/store';
 import { AppState, AvailableDays, Dialogs } from '../../store/absence.reducer';
 import { getAllAbsences, setStatusPending, setUser } from '../../store/absence.actions';
-import { AbsenceTypeEnums } from 'shared';
 import { AuthService } from '../../services/auth.service';
 
 interface CalendarItem {
@@ -27,6 +26,12 @@ export interface User {
   userName: string;
   email: string;
   password: string;
+}
+
+export enum AbsenceTypeEnums {
+  ALL = 'all',
+  SICK = 'sick',
+  VACATION = 'vacation',
 }
 
 export interface AbsenceItem {
