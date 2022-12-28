@@ -4,59 +4,33 @@
       <h1 class="bold">Calendar</h1>
       <div class="switch">
         <mat-button-toggle-group [(ngModel)]="calendarType">
-          <mat-button-toggle
-            class="bold"
-            (click)="setCalendarType(calendarType)"
-            value="month"
-            >Month
+          <mat-button-toggle class="bold" (click)="setCalendarType(calendarType)" value="month">Month
           </mat-button-toggle>
-          <mat-button-toggle
-            class="bold"
-            (click)="setCalendarType(calendarType)"
-            value="year"
-            >Year</mat-button-toggle
-          >
+          <mat-button-toggle class="bold" (click)="setCalendarType(calendarType)" value="year">Year</mat-button-toggle>
         </mat-button-toggle-group>
       </div>
     </div>
     <div class="calendar__filters">
       <div class="current" [ngSwitch]="calendarType">
         <div *ngSwitchCase="'month'" class="current">
-          <mat-icon class="arrow" (click)="setCurrentDate(-1, 'month')"
-            >keyboard_arrow_left</mat-icon
-          >
+          <mat-icon class="arrow" (click)="setCurrentDate(-1, 'month')">keyboard_arrow_left</mat-icon>
           <h3 class="current__val">
             {{ date.format('MMMM ') }}{{ date.format('YYYY ') }}
           </h3>
-          <mat-icon class="arrow" (click)="setCurrentDate(1, 'month')"
-            >keyboard_arrow_right</mat-icon
-          >
+          <mat-icon class="arrow" (click)="setCurrentDate(1, 'month')">keyboard_arrow_right</mat-icon>
         </div>
         <div *ngSwitchCase="'year'" class="current">
-          <mat-icon class="arrow" (click)="setCurrentDate(-1, 'year')"
-            >keyboard_arrow_left</mat-icon
-          >
+          <mat-icon class="arrow" (click)="setCurrentDate(-1, 'year')">keyboard_arrow_left</mat-icon>
           <h3 class="current__val">{{ date.format('YYYY ') }}</h3>
-          <mat-icon class="arrow" (click)="setCurrentDate(1, 'year')"
-            >keyboard_arrow_right</mat-icon
-          >
+          <mat-icon class="arrow" (click)="setCurrentDate(1, 'year')">keyboard_arrow_right</mat-icon>
         </div>
-        <button
-          (click)="setTodaysDate()"
-          class="request-button"
-          mat-flat-button
-        >
+        <button (click)="setTodaysDate()" class="request-button" mat-flat-button>
           Today
         </button>
       </div>
       <mat-form-field class="filter" appearance="outline">
-        <mat-label class="filter-select bolder"
-          >Filter by absence type</mat-label
-        >
-        <mat-select
-          (selectionChange)="filterByAbsence()"
-          [(value)]="selectedAbsenceFilter"
-        >
+        <mat-label class="filter-select bolder">Filter by absence type</mat-label>
+        <mat-select (selectionChange)="filterByAbsence()" [(value)]="selectedAbsenceFilter">
           <mat-option *ngFor="let item of absenceTypes" [value]="item.value">
             {{ item.viewValue }}
           </mat-option>
@@ -73,31 +47,18 @@
         </div>
         <div *ngFor="let calendarItem of calendar; let i = index">
           <div class="calendar__content">
-            <div
-              [class.weekend]="day.isWeekend"
-              [ngClass]="day.className"
-              *ngFor="let day of calendarItem"
-            >
-              <div
-                (click)="
+            <div [class.weekend]="day.isWeekend" [ngClass]="day.className" *ngFor="let day of calendarItem">
+              <div (click)="
                   day.absence.absenceType.length
                     ? updateAbsence(day.fullDate, day.absence.id)
                     : handleDialogView(true, 'requestDialog', day.fullDate)
-                "
-                class="day green"
-                [class.light]="day.className !== 'in-month'"
-              >
+                " class="day green" [class.light]="day.className !== 'in-month'">
                 <div class="day-val">{{ day.day }}</div>
-                <span
-                  [class.vacation]="
+                <span [class.vacation]="
                     day.absence.absenceType === AbsenceTypeEnums.VACATION
-                  "
-                  [class.sick]="
+                  " [class.sick]="
                     day.absence.absenceType === AbsenceTypeEnums.SICK
-                  "
-                  class="day-comment"
-                  >{{ day.absence.comment }}</span
-                >
+                  " class="day-comment">{{ day.absence.comment }}</span>
               </div>
             </div>
           </div>
@@ -108,11 +69,7 @@
           <mat-spinner></mat-spinner>
         </div>
         <div *ngFor="let month of months; let i = index">
-          <div
-            [attr.name]="month"
-            (click)="setCurrentMonth($event)"
-            class="month"
-          >
+          <div [attr.name]="month" (click)="setCurrentMonth($event)" class="month">
             {{ month }}
           </div>
         </div>
@@ -121,12 +78,8 @@
   </div>
   <div class="absence">
     <div class="request">
-      <button
-        (click)="handleDialogView(true, 'requestDialog', '')"
-        class="request-button"
-        mat-flat-button
-        color="primary"
-      >
+      <button (click)="handleDialogView(true, 'requestDialog', '')" class="request-button" mat-flat-button
+        color="primary">
         Request absence
       </button>
     </div>
@@ -140,13 +93,11 @@
               <h2 class="m-0">Vacation</h2>
             </mat-panel-title>
             <mat-panel-description class="bold">
-              <span class="left"
-                >{{
+              <span class="left">{{
                   availableDays.vacation.entitlement -
                     availableDays.vacation.taken
                 }}
-                Days left</span
-              >
+                Days left</span>
             </mat-panel-description>
           </mat-expansion-panel-header>
           <h3 class="bold">Breakdown for 2022</h3>
@@ -174,12 +125,10 @@
               <h2 class="m-0">Sick</h2>
             </mat-panel-title>
             <mat-panel-description class="bold">
-              <span class="left"
-                >{{
+              <span class="left">{{
                   availableDays.sick.entitlement - availableDays.sick.taken
                 }}
-                Days left</span
-              >
+                Days left</span>
             </mat-panel-description>
           </mat-expansion-panel-header>
           <h3 class="bold">Breakdown for 2022</h3>
@@ -201,23 +150,13 @@
   </div>
 </div>
 
-<app-dialog
-  [title]="'Request Absence'"
-  [currentAbsence]="currentAbsence"
-  name="requestDialog"
-  [absenceTypes]="absenceTypes"
-  (closeDialog)="closeDialog($event)"
-  [dialogs]="dialogs"
-  [showDialog]="dialogs.requestDialog"
->
+<app-dialog [title]="'Request Absence'" [currentAbsence]="currentAbsence" name="requestDialog"
+  [absenceTypes]="absenceTypes" [user]="user" (closeDialog)="closeDialog($event)" [dialogs]="dialogs"
+  [showDialog]="dialogs.requestDialog">
 </app-dialog>
-<app-dialog
-  [title]="'Absence Period'"
-  [currentAbsence]="currentAbsence"
-  name="updateDialog"
-  [absenceTypes]="absenceTypes"
-  (closeDialog)="closeDialog($event)"
-  [dialogs]="dialogs"
-  [showDialog]="dialogs.updateDialog"
->
+<app-dialog [title]="'Absence Period'" [currentAbsence]="currentAbsence" name="updateDialog"
+  [absenceTypes]="absenceTypes" [user]="user" (closeDialog)="closeDialog($event)" [dialogs]="dialogs"
+  [showDialog]="dialogs.updateDialog">
 </app-dialog>
+
+

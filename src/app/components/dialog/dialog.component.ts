@@ -7,7 +7,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { AbsenceItem, AbsenceType } from '../calendar/calendar.component';
+import { AbsenceItem, AbsenceType, User } from '../calendar/calendar.component';
 import * as moment from 'moment';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AbsencesService } from '../../services/absences.service';
@@ -38,6 +38,7 @@ export class DialogComponent implements OnInit, OnChanges, OnDestroy {
   @Input() currentAbsence!: AbsenceItem;
   @Input() title!: string;
   @Input() dialogs!: Dialogs;
+  @Input() user!: User;
 
   @Output() closeDialog = new EventEmitter<Dialogs>();
 
@@ -57,7 +58,7 @@ export class DialogComponent implements OnInit, OnChanges, OnDestroy {
   constructor(
     private absencesService: AbsencesService,
     private store: Store<{ appState: AppState }>
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.store
@@ -66,9 +67,9 @@ export class DialogComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe((value) => {
         Object.keys(this.availableDays).forEach(
           (key) =>
-            (this.availableDays[key as keyof AvailableDays] =
-              value[key as keyof AvailableDays].entitlement -
-              value[key as keyof AvailableDays].taken)
+          (this.availableDays[key as keyof AvailableDays] =
+            value[key as keyof AvailableDays].entitlement -
+            value[key as keyof AvailableDays].taken)
         );
       });
     this.store
@@ -177,7 +178,7 @@ export class DialogComponent implements OnInit, OnChanges, OnDestroy {
 
     this.changeDateFormat(data);
     this.store.dispatch(setStatusPending());
-    this.store.dispatch(addAbsence(data));
+    this.store.dispatch(addAbsence({ absence: data, user: this.user }));
     this.handleDialogView(false);
   }
 
@@ -207,7 +208,7 @@ export class DialogComponent implements OnInit, OnChanges, OnDestroy {
     return (
       currentFormDuration >
       this.availableDays[
-        this.absenceForm.value.absenceType as keyof AvailableDays
+      this.absenceForm.value.absenceType as keyof AvailableDays
       ]
     );
   }

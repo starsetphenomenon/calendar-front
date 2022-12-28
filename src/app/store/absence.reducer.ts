@@ -1,16 +1,21 @@
 import { createReducer, on } from '@ngrx/store';
-import { AbsenceItem } from '../components/calendar/calendar.component';
+import { AbsenceItem, User } from '../components/calendar/calendar.component';
 import {
   addAbsence,
   deleteAbsence,
   getAllAbsences,
+  isAuthenticated,
+  registerUser,
   setAllAbsences,
   setAvailableDays,
+  setErrorMessage,
   setStatusError,
   setStatusPending,
   setStatusSucces,
+  setUser,
   updateAbsence,
   updateAvailableDays,
+  userCreated,
 } from './absence.actions';
 
 export interface AvailableDays {
@@ -33,6 +38,10 @@ export interface AppState {
   absences: AbsenceItem[];
   availableDays: AvailableDays;
   status: 'pending' | 'success' | 'error';
+  user: User;
+  userCreated: boolean;
+  isAuthenticated: boolean;
+  errorMessage: string;
 }
 
 const initialState: AppState = {
@@ -48,6 +57,15 @@ const initialState: AppState = {
   },
   absences: [],
   status: 'pending',
+  errorMessage: '',
+  userCreated: false,
+  isAuthenticated: false,
+  user: {
+    id: 0,
+    email: '',
+    userName: '',
+    password: '',
+  },
 };
 
 export const absenceReducer = createReducer(
@@ -112,6 +130,37 @@ export const absenceReducer = createReducer(
     return {
       ...state,
       status: 'error',
+    };
+  }),
+  on(registerUser, (state) => {
+    return {
+      ...state,
+      userCreated: false,
+    };
+  }),
+  on(setUser, (state, action) => {
+    return {
+      ...state,
+      user: action,
+    };
+  }),
+  on(userCreated, (state, action) => {
+    return {
+      ...state,
+      user: action,
+      userCreated: !!action,
+    };
+  }),
+  on(isAuthenticated, (state, action) => {
+    return {
+      ...state,
+      isAuthenticated: action.status,
+    };
+  }),
+  on(setErrorMessage, (state, action) => {
+    return {
+      ...state,
+      errorMessage: action.message,
     };
   })
 );
