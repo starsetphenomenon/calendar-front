@@ -40,7 +40,6 @@ export class LoginPage implements OnInit, OnDestroy {
         this.errorMessage$
             .pipe(takeUntil(this.destroy$))
             .subscribe((message) => {
-                console.log(message)
                 this.errorMessage = message;
             });
     }

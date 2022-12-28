@@ -96,8 +96,9 @@ export class AbsenceEffects {
       }),
       switchMap((user) => {
         if (user.error) {
-          return [actions.setErrorMessage({ message: user.error.text })]
+          return [actions.setErrorMessage({ message: user.error.text })];
         }
+        this.authService.setUserIsAuthenticated(true);
         return [actions.setUser(user), actions.userCreated(user)];
       }),
       catchError((error) => of(actions.setErrorMessage(error), error)),
@@ -113,8 +114,9 @@ export class AbsenceEffects {
       }),
       switchMap((user) => {
         if (user.error) {
-          return [actions.isAuthenticated({ status: false }), actions.setErrorMessage({ message: user.error.text })]
+          return [actions.isAuthenticated({ status: false }), actions.setErrorMessage({ message: user.error.text })];
         }
+        this.authService.setUserIsAuthenticated(true);
         return [actions.setUser(user), actions.isAuthenticated({ status: !!user })];
       }),
 

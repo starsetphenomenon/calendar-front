@@ -14,9 +14,9 @@ export class AuthService {
         private store: Store<{ appState: AppState }>
     ) { }
 
-    BASE_URL: string = 'https://calendar-back-production-dfa3.up.railway.app';
+    BASE_URL: string = 'http://localhost:3333';
     API: string = 'api/users';
-    user!: User;
+    userIsAuthenticated?: boolean;
 
     registerUser(user: User) {
         return this.http.post<User>(`${this.BASE_URL}/${this.API}`, user);
@@ -31,12 +31,13 @@ export class AuthService {
         return this.http.get<User>(`${this.BASE_URL}/${this.API}`, { params });
     }
 
-    getUser() {
-        return this.user;
+    setUserIsAuthenticated(status: boolean) {
+        localStorage.setItem('userAuthenticated', 'true');
+        return this.userIsAuthenticated = status;
     }
 
-    setUser(user: User) {
-        this.user = user;
+    getUserIsAuthenticated() {
+        return this.userIsAuthenticated;
     }
 }
 

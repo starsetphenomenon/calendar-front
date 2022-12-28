@@ -14,7 +14,7 @@ export class AbsencesService {
   currentAbsenceDate!: string;
   currentAbsenceID!: number;
 
-  BASE_URL: string = 'https://calendar-back-production-dfa3.up.railway.app';
+  BASE_URL: string = 'http://localhost:3333';
   API: string = 'api/absences';
 
   getAllAbsences(user: User) {

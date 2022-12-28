@@ -16,6 +16,12 @@ interface CalendarItem {
   fullDate: string;
 }
 
+export enum AbsenceTypeEnums {
+  ALL = 'all',
+  SICK = 'sick',
+  VACATION = 'vacation',
+}
+
 export interface UserAbsence {
   user: User;
   absence: AbsenceItem;
@@ -26,12 +32,6 @@ export interface User {
   userName: string;
   email: string;
   password: string;
-}
-
-export enum AbsenceTypeEnums {
-  ALL = 'all',
-  SICK = 'sick',
-  VACATION = 'vacation',
 }
 
 export interface AbsenceItem {
@@ -113,7 +113,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     let localUser = JSON.parse(localStorage.getItem('user') as string);
     if (localUser) {
-      this.authService.setUser(localUser);
+      this.authService.setUserIsAuthenticated(true);
       this.store.dispatch(setUser(localUser));
     }
     this.user$ = this.store.select((store) => store.appState.user);
@@ -122,7 +122,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       .subscribe((user) => {
         localStorage.setItem('user', JSON.stringify(user));
         this.user = user;
-        this.authService.setUser(user);
+
       });
     this.store.dispatch(getAllAbsences(this.user));
     this.availableDays$ = this.store.select(
@@ -155,6 +155,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
     localStorage.removeItem('user');
+    localStorage.removeItem('userAuthenticated');
   }
 
   filterByAbsence() {
