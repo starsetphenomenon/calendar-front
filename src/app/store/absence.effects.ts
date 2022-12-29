@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, concatMap, exhaustMap, map, of, switchMap } from 'rxjs';
 import { AbsencesService } from '../services/absences.service';
+import { AuthGuardService } from '../services/auth-guard.service';
 import { AuthService } from '../services/auth.service';
 import * as actions from './absence.actions';
 
@@ -12,13 +13,14 @@ export class AbsenceEffects {
     private actions$: Actions,
     private absencesService: AbsencesService,
     private authService: AuthService,
+    private guardService: AuthGuardService,
   ) { }
 
   getAbsences$ = createEffect(() =>
     this.actions$.pipe(
       ofType(actions.getAllAbsences),
-      exhaustMap((user) => {
-        return this.absencesService.getAllAbsences(user);
+      exhaustMap(({ token }) => {
+        return this.absencesService.getAllAbsences(token);
       }),
       switchMap((absences) => {
         return [
@@ -47,8 +49,8 @@ export class AbsenceEffects {
   addAbsence$ = createEffect(() =>
     this.actions$.pipe(
       ofType(actions.addAbsence),
-      concatMap(({ absence, user }) => {
-        return this.absencesService.addAbsence({ absence, user });
+      concatMap(({ absence, userToken }) => {
+        return this.absencesService.addAbsence({ absence, userToken });
       }),
       switchMap(() => {
         this.authService.updateAbsences();
@@ -96,28 +98,33 @@ export class AbsenceEffects {
       }),
       switchMap((user) => {
         if (user.error) {
-          return [actions.setErrorMessage({ message: user.error.text })];
+          return [actions.setErrorMessage({ message: user.error.message })];
         }
-        this.authService.setUserIsAuthenticated(true);
-        return [actions.setUser(user), actions.userCreated(user)];
+        setTimeout(_ => {
+          this.authService.redirectToLogin();
+        }, 3000);
+        return [actions.setToken({ token: 'pending' })];
       }),
       catchError((error) => of(actions.setErrorMessage(error), error)),
     )
   );
 
-  authenticateUser$ = createEffect(() =>
+  loginUser$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.authenticateUser),
+      ofType(actions.loginUser),
       concatMap((user) => {
-        return this.authService.authenticateUser(user).pipe(
+        return this.authService.loginUser(user).pipe(
           catchError((error) => of(error)));
       }),
-      switchMap((user) => {
-        if (user.error) {
-          return [actions.isAuthenticated({ status: false }), actions.setErrorMessage({ message: user.error.text })];
+      switchMap((response) => {
+        if (response.status !== 201) {
+          return [actions.setErrorMessage({ message: response.error.message })];
         }
-        this.authService.setUserIsAuthenticated(true);
-        return [actions.setUser(user), actions.isAuthenticated({ status: !!user })];
+        this.guardService.setGuard(true);
+        setTimeout(_ => {
+          this.authService.redirectToCalendar();
+        }, 3000);
+        return [actions.setToken({ token: response.error.text })];
       }),
 
     )

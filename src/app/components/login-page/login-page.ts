@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { authenticateUser } from '../../store/absence.actions';
+import { loginUser, setErrorMessage } from '../../store/absence.actions';
 import { AppState } from '../../store/absence.reducer';
 
 @Component({
@@ -16,8 +16,8 @@ export class LoginPage implements OnInit, OnDestroy {
     destroy$: Subject<boolean> = new Subject<boolean>();
     errorMessage?: string;
     errorMessage$?: Observable<string>;
-    isAuthenticated?: boolean;
-    isAuthenticated$?: Observable<boolean>;
+    userToken?: string;
+    userToken$?: Observable<string>;
 
     constructor(
         private store: Store<{ appState: AppState }>,
@@ -25,16 +25,11 @@ export class LoginPage implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
-        this.isAuthenticated$ = this.store.select((store) => store.appState.isAuthenticated);
-        this.isAuthenticated$
+        this.userToken$ = this.store.select((store) => store.appState.token);
+        this.userToken$
             .pipe(takeUntil(this.destroy$))
-            .subscribe((authenticated) => {
-                this.isAuthenticated = authenticated;
-                if (this.isAuthenticated) {
-                    setTimeout(_ => {
-                        this.router.navigate(['/calendar']);
-                    }, 3000);
-                };
+            .subscribe((token) => {
+                this.userToken = token;
             });
         this.errorMessage$ = this.store.select((store) => store.appState.errorMessage);
         this.errorMessage$
@@ -47,6 +42,7 @@ export class LoginPage implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
+        this.store.dispatch(setErrorMessage({ message: '' }));
     }
 
     loginForm: FormGroup = new FormGroup({
@@ -56,7 +52,7 @@ export class LoginPage implements OnInit, OnDestroy {
 
     onSubmit() {
         const user = this.loginForm.value;
-        this.store.dispatch(authenticateUser(user));
+        this.store.dispatch(loginUser(user));
     }
 
     goToRegister() {

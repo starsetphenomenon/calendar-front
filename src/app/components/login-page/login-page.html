@@ -1,9 +1,9 @@
 <div class="login-page">
-  <div *ngIf="isAuthenticated" class="success">
+  <div *ngIf="userToken?.length && userToken!=='pending'" class="success">
     <h1>Successfully login!</h1>
   </div>
-  <mat-spinner *ngIf="isAuthenticated"></mat-spinner>
-  <form *ngIf="!isAuthenticated" [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+  <mat-spinner *ngIf="userToken?.length && userToken!=='pending'"></mat-spinner>
+  <form *ngIf="!userToken?.length || userToken=='pending'" [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
     <h1>Sign In</h1>
     <span *ngIf="errorMessage?.length" class="error">{{errorMessage}}</span>
     <mat-form-field class="login-item" appearance="fill">

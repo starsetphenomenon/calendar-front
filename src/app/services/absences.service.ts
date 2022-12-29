@@ -17,20 +17,19 @@ export class AbsencesService {
   BASE_URL: string = 'http://localhost:3333';
   API: string = 'api/absences';
 
-  getAllAbsences(user: User) {
-    const params = new HttpParams().append('user', JSON.stringify(user));
+  getAllAbsences(token: string) {
+    const params = new HttpParams().append('user', token);
     return this.http.get<AbsenceItem[]>(`${this.BASE_URL}/${this.API}`, { params });
   }
 
   getAvailableDays() {
-    let user;
-    this.store.select(store => store.appState.user).subscribe(currentUser => (user = currentUser))
-    const params = new HttpParams().append('user', JSON.stringify(user));
+    let token!: string;
+    this.store.select(store => store.appState.token).subscribe(userToken => (token = userToken))
+    const params = new HttpParams().append('user', token);
     return this.http.get<AvailableDays>(`${this.BASE_URL}/${this.API}/availableDays`, { params });
   }
 
   addAbsence(data: UserAbsence) {
-
     return this.http.post(`${this.BASE_URL}/${this.API}`, data);
   }
 

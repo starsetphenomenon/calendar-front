@@ -1,9 +1,9 @@
   <div class="register-page">
-    <div *ngIf="userCreated" class="created">
+    <div *ngIf="userToken?.length" class="created">
       <h1>User successfully created!</h1>
     </div>
-    <mat-spinner *ngIf="userCreated"></mat-spinner>
-    <form *ngIf="!userCreated" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+    <mat-spinner *ngIf="userToken?.length"></mat-spinner>
+    <form *ngIf="!userToken?.length" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
       <h1>Registration</h1>
       <span *ngIf="errorMessage?.length" class="error">{{errorMessage}}</span>
       <mat-form-field class="register-item" appearance="outline">

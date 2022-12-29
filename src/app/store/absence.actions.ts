@@ -4,7 +4,7 @@ import { AvailableDays } from './absence.reducer';
 
 export const getAllAbsences = createAction(
   '[Absences API] Get All Absences',
-  props<User>());
+  props<{ token: string }>());
 
 export const setAllAbsences = createAction(
   '[Absences] Get All Absences',
@@ -33,9 +33,9 @@ export const updateAbsence = createAction(
   props<{ id: number; newAbsence: AbsenceItem }>()
 );
 
-export const getUser = createAction(
-  '[Users] Get User',
-  props<{ userName: string }>()
+export const setToken = createAction(
+  '[Token] Set Token',
+  props<{ token: string }>()
 );
 
 export const registerUser = createAction(
@@ -43,22 +43,7 @@ export const registerUser = createAction(
   props<User>()
 );
 
-export const setUser = createAction(
-  '[Users] Set User',
-  props<User>()
-);
-
-export const userCreated = createAction(
-  '[Users] User Created',
-  props<User>()
-);
-
-export const isAuthenticated = createAction(
-  '[Users] User Is Authenticated',
-  props<{ status: boolean }>()
-);
-
-export const authenticateUser = createAction(
+export const loginUser = createAction(
   '[Users] Check User Authentication',
   props<User>()
 );

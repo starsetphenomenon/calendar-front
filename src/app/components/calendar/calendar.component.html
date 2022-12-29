@@ -151,11 +151,11 @@
 </div>
 
 <app-dialog [title]="'Request Absence'" [currentAbsence]="currentAbsence" name="requestDialog"
-  [absenceTypes]="absenceTypes" [user]="user" (closeDialog)="closeDialog($event)" [dialogs]="dialogs"
+  [absenceTypes]="absenceTypes" [token]="token" (closeDialog)="closeDialog($event)" [dialogs]="dialogs"
   [showDialog]="dialogs.requestDialog">
 </app-dialog>
 <app-dialog [title]="'Absence Period'" [currentAbsence]="currentAbsence" name="updateDialog"
-  [absenceTypes]="absenceTypes" [user]="user" (closeDialog)="closeDialog($event)" [dialogs]="dialogs"
+  [absenceTypes]="absenceTypes" [token]="token" (closeDialog)="closeDialog($event)" [dialogs]="dialogs"
   [showDialog]="dialogs.updateDialog">
 </app-dialog>
 

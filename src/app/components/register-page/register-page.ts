@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { registerUser } from '../../store/absence.actions';
+import { registerUser, setErrorMessage } from '../../store/absence.actions';
 import { AppState } from '../../store/absence.reducer';
 
 @Component({
@@ -15,39 +14,34 @@ import { AppState } from '../../store/absence.reducer';
 export class RegisterPage implements OnInit, OnDestroy {
 
     destroy$: Subject<boolean> = new Subject<boolean>();
-    userCreated?: boolean;
-    userCreated$?: Observable<boolean>;
+    userToken?: string;
+    userToken$?: Observable<string>;
     errorMessage?: string;
     errorMessage$?: Observable<string>;
 
     constructor(
-        private store: Store<{ appState: AppState }>,
-        private router: Router
+        private store: Store<{ appState: AppState }>
     ) { }
 
     ngOnInit(): void {
-        this.userCreated$ = this.store.select((store) => store.appState.userCreated);
         this.errorMessage$ = this.store.select((store) => store.appState.errorMessage);
-        this.userCreated$
+        this.userToken$ = this.store.select((store) => store.appState.token);
+        this.userToken$
             .pipe(takeUntil(this.destroy$))
-            .subscribe((userCreated) => {
-                this.userCreated = userCreated;
-                if (this.userCreated) {
-                    setTimeout(_ => {
-                        this.router.navigate(['/calendar']);
-                    }, 3000);
-                }
+            .subscribe((token) => {
+                this.userToken = token;                
             });
         this.errorMessage$
             .pipe(takeUntil(this.destroy$))
             .subscribe((message) => {
-                this.errorMessage = message;                
+                this.errorMessage = message;
             });
     }
 
     ngOnDestroy(): void {
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
+        this.store.dispatch(setErrorMessage({ message: '' }));
     }
 
     registerForm: FormGroup = new FormGroup({

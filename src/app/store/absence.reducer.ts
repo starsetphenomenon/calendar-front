@@ -4,7 +4,6 @@ import {
   addAbsence,
   deleteAbsence,
   getAllAbsences,
-  isAuthenticated,
   registerUser,
   setAllAbsences,
   setAvailableDays,
@@ -12,10 +11,9 @@ import {
   setStatusError,
   setStatusPending,
   setStatusSucces,
-  setUser,
+  setToken,
   updateAbsence,
   updateAvailableDays,
-  userCreated,
 } from './absence.actions';
 
 export interface AvailableDays {
@@ -38,10 +36,8 @@ export interface AppState {
   absences: AbsenceItem[];
   availableDays: AvailableDays;
   status: 'pending' | 'success' | 'error';
-  user: User;
-  userCreated: boolean;
-  isAuthenticated: boolean;
   errorMessage: string;
+  token: string;
 }
 
 const initialState: AppState = {
@@ -58,14 +54,7 @@ const initialState: AppState = {
   absences: [],
   status: 'pending',
   errorMessage: '',
-  userCreated: false,
-  isAuthenticated: false,
-  user: {
-    id: 0,
-    email: '',
-    userName: '',
-    password: '',
-  },
+  token: '',
 };
 
 export const absenceReducer = createReducer(
@@ -138,23 +127,10 @@ export const absenceReducer = createReducer(
       userCreated: false,
     };
   }),
-  on(setUser, (state, action) => {
+  on(setToken, (state, action) => {
     return {
       ...state,
-      user: action,
-    };
-  }),
-  on(userCreated, (state, action) => {
-    return {
-      ...state,
-      user: action,
-      userCreated: !!action,
-    };
-  }),
-  on(isAuthenticated, (state, action) => {
-    return {
-      ...state,
-      isAuthenticated: action.status,
+      token: action.token,
     };
   }),
   on(setErrorMessage, (state, action) => {

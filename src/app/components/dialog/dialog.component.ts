@@ -38,7 +38,7 @@ export class DialogComponent implements OnInit, OnChanges, OnDestroy {
   @Input() currentAbsence!: AbsenceItem;
   @Input() title!: string;
   @Input() dialogs!: Dialogs;
-  @Input() user!: User;
+  @Input() token!: string;
 
   @Output() closeDialog = new EventEmitter<Dialogs>();
 
@@ -178,7 +178,7 @@ export class DialogComponent implements OnInit, OnChanges, OnDestroy {
 
     this.changeDateFormat(data);
     this.store.dispatch(setStatusPending());
-    this.store.dispatch(addAbsence({ absence: data, user: this.user }));
+    this.store.dispatch(addAbsence({ absence: data, userToken: this.token }));
     this.handleDialogView(false);
   }
 
