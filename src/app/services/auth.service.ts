@@ -16,7 +16,7 @@ export class AuthService {
         private router: Router
     ) { }
 
-    BASE_URL: string = 'calendar-back-production-dfa3.up.railway.app';
+    BASE_URL: string = 'https://calendar-back-production-dfa3.up.railway.app';
     API: string = 'api/users';
     userIsAuthenticated?: boolean;
 
