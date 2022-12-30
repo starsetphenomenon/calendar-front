@@ -22,23 +22,18 @@ export class AbsencesService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
-
     return this.http.get<AbsenceItem[]>(`${this.BASE_URL}/${this.API}`, { headers });
   }
 
   getAvailableDays() {
     let token!: string;
-    this.store.select(store => store.appState.token).subscribe(userToken => (token = userToken))
+    this.store.select(store => store.appState.token).subscribe(userToken => (token = userToken));
     const params = new HttpParams().append('user', token);
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    });
-    return this.http.get<AvailableDays>(`${this.BASE_URL}/${this.API}/availableDays`, { params, headers });
+    return this.http.get<AvailableDays>(`${this.BASE_URL}/${this.API}/availableDays`, { params, headers: this.getHeaders() });
   }
 
-  addAbsence(data: UserAbsence) {
-    return this.http.post(`${this.BASE_URL}/${this.API}`, data);
+  addAbsence(absence: AbsenceItem) {
+    return this.http.post(`${this.BASE_URL}/${this.API}`, absence, { headers: this.getHeaders() });
   }
 
   deleteAbsence(id: number) {
@@ -48,4 +43,15 @@ export class AbsencesService {
   updateAbsence(id: number, newAbsence: AbsenceItem) {
     return this.http.put(`${this.BASE_URL}/${this.API}/${id}`, newAbsence);
   }
+
+  getHeaders() {
+    let token!: string;
+    this.store.select(store => store.appState.token).subscribe(userToken => (token = userToken))
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return headers;
+  }
+
 }
