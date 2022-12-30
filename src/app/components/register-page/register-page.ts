@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, takeUntil } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 import { registerUser, setErrorMessage } from '../../store/absence.actions';
 import { AppState } from '../../store/absence.reducer';
 
@@ -20,7 +21,8 @@ export class RegisterPage implements OnInit, OnDestroy {
     errorMessage$?: Observable<string>;
 
     constructor(
-        private store: Store<{ appState: AppState }>
+        private store: Store<{ appState: AppState }>,
+        private authService: AuthService,
     ) { }
 
     ngOnInit(): void {
@@ -29,13 +31,14 @@ export class RegisterPage implements OnInit, OnDestroy {
         this.userToken$
             .pipe(takeUntil(this.destroy$))
             .subscribe((token) => {
-                this.userToken = token;                
+                this.userToken = token;
             });
         this.errorMessage$
             .pipe(takeUntil(this.destroy$))
             .subscribe((message) => {
                 this.errorMessage = message;
             });
+        this.userToken = '';
     }
 
     ngOnDestroy(): void {
@@ -53,5 +56,9 @@ export class RegisterPage implements OnInit, OnDestroy {
     onSubmit() {
         const user = this.registerForm.value;
         this.store.dispatch(registerUser(user));
+    }
+
+    goToLogin() {
+        this.authService.redirectToLogin();
     }
 }

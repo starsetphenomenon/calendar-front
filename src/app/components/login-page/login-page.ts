@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, takeUntil } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 import { loginUser, setErrorMessage } from '../../store/absence.actions';
 import { AppState } from '../../store/absence.reducer';
 
@@ -21,7 +21,7 @@ export class LoginPage implements OnInit, OnDestroy {
 
     constructor(
         private store: Store<{ appState: AppState }>,
-        private router: Router
+        private authService: AuthService,
     ) { }
 
     ngOnInit(): void {
@@ -37,6 +37,7 @@ export class LoginPage implements OnInit, OnDestroy {
             .subscribe((message) => {
                 this.errorMessage = message;
             });
+        this.userToken = '';
     }
 
     ngOnDestroy(): void {
@@ -56,6 +57,6 @@ export class LoginPage implements OnInit, OnDestroy {
     }
 
     goToRegister() {
-        this.router.navigate(['/register']);
+        this.authService.redirectToRegister();
     }
 }

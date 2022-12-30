@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AbsenceItem, User, UserAbsence } from '../components/calendar/calendar.component';
@@ -18,15 +18,23 @@ export class AbsencesService {
   API: string = 'api/absences';
 
   getAllAbsences(token: string) {
-    const params = new HttpParams().append('user', token);
-    return this.http.get<AbsenceItem[]>(`${this.BASE_URL}/${this.API}`, { params });
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<AbsenceItem[]>(`${this.BASE_URL}/${this.API}`, { headers });
   }
 
   getAvailableDays() {
     let token!: string;
     this.store.select(store => store.appState.token).subscribe(userToken => (token = userToken))
     const params = new HttpParams().append('user', token);
-    return this.http.get<AvailableDays>(`${this.BASE_URL}/${this.API}/availableDays`, { params });
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+    return this.http.get<AvailableDays>(`${this.BASE_URL}/${this.API}/availableDays`, { params, headers });
   }
 
   addAbsence(data: UserAbsence) {

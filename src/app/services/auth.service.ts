@@ -30,7 +30,11 @@ export class AuthService {
 
     updateAbsences() {
         this.store.select(store => store.appState.token).subscribe(token => this.store.dispatch(getAllAbsences({ token })));
-    } 
+    }
+
+    redirectToRegister() {
+        this.router.navigate(['/register']);
+    }
 
     redirectToLogin() {
         this.router.navigate(['/login']);
