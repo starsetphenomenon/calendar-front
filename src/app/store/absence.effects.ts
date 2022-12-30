@@ -49,8 +49,8 @@ export class AbsenceEffects {
   addAbsence$ = createEffect(() =>
     this.actions$.pipe(
       ofType(actions.addAbsence),
-      concatMap(({ absence, userToken }) => {
-        return this.absencesService.addAbsence({ absence, userToken });
+      concatMap((absence) => {
+        return this.absencesService.addAbsence(absence);
       }),
       switchMap(() => {
         this.authService.updateAbsences();

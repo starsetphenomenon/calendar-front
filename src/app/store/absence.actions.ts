@@ -20,7 +20,7 @@ export const updateAvailableDays = createAction('[Days] Update Available Days');
 
 export const addAbsence = createAction(
   '[Absences] Add Absence',
-  props<UserAbsence>()
+  props<AbsenceItem>()
 );
 
 export const deleteAbsence = createAction(
