@@ -20,5 +20,6 @@
           type="password">
       </mat-form-field>
       <button [disabled]="!registerForm.valid" mat-raised-button color="primary">Register</button>
+      <button mat-raised-button color="primary" (click)="goToLogin()">Login</button>
     </form>
   </div>
